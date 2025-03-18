@@ -35,3 +35,6 @@ Codage d'information en utilisant le codage de Huffman
   - [x] lire le ficher dico
   - [x] mettre dans une variable dict
 - [x] recupere les donnes a code depuis un fichier
+- [x] Compression
+  - [x] Encodage
+  - [x] sauvegarder en binaire les bit[]
