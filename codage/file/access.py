@@ -12,6 +12,5 @@ def loadCodeData(filepath):
 
 def writeHuffman(filePath,m,S,C):
     with open(filePath, 'w') as f:
-        f.write(f"{m}\n")
-        f.write(" ".join(S) + "\n")
-        f.write(" ".join(C) + "\n")
+        for i in range(m):
+            f.write(f'{S[i]}:{C[i]}\n')
