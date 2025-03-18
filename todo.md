@@ -31,5 +31,10 @@ Codage d'information en utilisant le codage de Huffman
 
 ## Écrire un programme qui prend en paramètre un mot/texte de S et renvoie le mot/texte codé par le codage de Huffman précédent
 
-- [ ] recupere le dicrionnaire
-- [ ] 
+- [x] recupere le dicrionnaire
+  - [x] lire le ficher dico
+  - [x] mettre dans une variable dict
+- [x] recupere les donnes a code depuis un fichier
+- [x] Compression
+  - [x] Encodage
+  - [x] sauvegarder en binaire les bit[]
