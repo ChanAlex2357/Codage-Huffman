@@ -5,14 +5,10 @@ from codage import huffmanRender
 
 print('Codage de l\'information en utilisant le codage de Huffman')
 # Recuperation des donnees m, S, P
-m,S,P = (loadCodeData('input.txt'))
-
+m,S,P = (loadCodeData('assets/input.txt'))
 # Traitement
-
 C = huffmanRender(m,S,P)
-
 # Resultat
-
 print(S)
 print(C)
-writeHuffman('huffman.txt',m,S,C)
+writeHuffman('assets/dico.txt',m,S,C)
