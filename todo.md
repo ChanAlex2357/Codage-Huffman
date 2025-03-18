@@ -29,4 +29,7 @@ Codage d'information en utilisant le codage de Huffman
         - [x] rT.t1.code = rt.code + 1
         - [x] rT.t2.code = rt.code + 0
 
-##
+## Écrire un programme qui prend en paramètre un mot/texte de S et renvoie le mot/texte codé par le codage de Huffman précédent
+
+- [ ] recupere le dicrionnaire
+- [ ] 
