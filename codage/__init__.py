@@ -2,16 +2,16 @@ from .huffman.HuffmanTree import HuffmanTree
 from .huffman.HuffmanForest import HuffmanForest
 from typing import List
 
-def buildHuffmanForest(m,S,P):
+def build_huffman_forest(m,S,P):
     trees = []
     for i in range(m):
-        trees.append(buildHuffmanTree(S[i],P[i]))
+        trees.append(build_huffman_tree(S[i],P[i]))
     return HuffmanForest(trees)
 
-def buildHuffmanTree(Si,Pi):
+def build_huffman_tree(Si,Pi):
     return (HuffmanTree(Si,Pi))
 
-def mergeTrees(trees: List[HuffmanTree], m: int) -> List[HuffmanTree]:
+def merge_trees(trees: List[HuffmanTree], m: int) -> List[HuffmanTree]:
     if m == 1:
         return trees
     # Trier dans l'ordre décroissant
@@ -30,7 +30,7 @@ def mergeTrees(trees: List[HuffmanTree], m: int) -> List[HuffmanTree]:
     new_T = trees.copy()
     new_T = trees[:m-2] + [mergedTree]
     # Descente dans l'arbre
-    rT = mergeTrees(new_T, m-1)
+    rT = merge_trees(new_T, m-1)
     # Remonter l'arbrer pour cree le code
     merge = []
     for rt in rT:
@@ -43,15 +43,20 @@ def mergeTrees(trees: List[HuffmanTree], m: int) -> List[HuffmanTree]:
         merge += [rt.get_tree2()]
     return merge
         
+def get_binaries(encoded):
+    binary_list = [f'{byte:08b}' for byte in encoded]
+    return binary_list
+def get_binaries_str(encoded):
+    binary_str = ''.join(f'{byte:08b}' for byte in encoded)
+    return binary_str
 
-
-def renderForest(forest,m):
+def render_forest(forest,m):
     trees = forest.get_trees()
-    mergeTrees(trees,m)
+    merge_trees(trees,m)
 
-def huffmanRender(m,S,P):
-    forest  = buildHuffmanForest(m,S,P)
-    renderForest(forest,m)
+def huffman_render(m,S,P):
+    forest  = build_huffman_forest(m,S,P)
+    render_forest(forest,m)
     C = []
     for tree in forest.get_trees():
         C.append(tree.get_code())

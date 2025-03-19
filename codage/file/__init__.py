@@ -1,12 +1,10 @@
-def readByteFile(filepath):
-    with open(filepath, 'r') as f:
+def read_data(filepath,mode='r'):
+    with open(filepath, mode) as f:
         data = f.read().strip()
     return data
-def readByteFile(filepath):
-    with open(filepath, 'rb') as f:
-        data = f.read()
-    return data
-def loadHuffmanData(filepath):
+def read_byte_file(filepath):
+    return read_data(filepath,'rb')
+def load_huffman_data(filepath):
     with open(filepath, 'r') as f:
         lines = f.read().strip().splitlines()
     if len(lines) < 3:
@@ -18,11 +16,11 @@ def loadHuffmanData(filepath):
         raise ValueError("Mismatch between declared size and provided data.")
     return m , alphabets, probabilities
 
-def writeHuffmanDico(filePath,m,S,C):
+def write_huffman_dico(filePath,m,S,C):
     with open(filePath, 'w') as f:
         for i in range(m):
             f.write(f'{S[i]}:{C[i]}\n')
-def loadHuffmanDico(filePath):
+def load_huffman_dico(filePath):
     huffDico = dict()
     with open(filePath,'r') as f:
         lines = f.read().strip().splitlines()
