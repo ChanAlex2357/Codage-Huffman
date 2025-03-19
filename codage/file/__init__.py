@@ -1,6 +1,10 @@
-def readData(filepath):
+def readByteFile(filepath):
     with open(filepath, 'r') as f:
         data = f.read().strip()
+    return data
+def readByteFile(filepath):
+    with open(filepath, 'rb') as f:
+        data = f.read()
     return data
 def loadHuffmanData(filepath):
     with open(filepath, 'r') as f:
