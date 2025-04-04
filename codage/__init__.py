@@ -46,6 +46,7 @@ def merge_trees(trees: List[HuffmanTree], m: int) -> List[HuffmanTree]:
 def get_binaries(encoded):
     binary_list = [f'{byte:08b}' for byte in encoded]
     return binary_list
+
 def get_binaries_str(encoded):
     binary_str = ''.join(f'{byte:08b}' for byte in encoded)
     return binary_str
@@ -61,4 +62,23 @@ def huffman_render(m,S,P):
     for tree in forest.get_trees():
         C.append(tree.get_code())
     return C 
-    
+
+def dico_decode(code,dico:dict):
+    keys = [ k for k,v in dico.items() if v == code]
+    if len(keys) > 1:
+        raise ValueError(f"Code '{code}' has multiple factor in the dictionary")
+    return dico.get(keys[0])
+
+def huffman_decode(encoded:str , dico:dict):
+    decoded = ''
+    # decoded = ''.join( dico_decode(code,dico) for code in encoded )
+    code = ''
+    for char in encoded:
+        code = code.join(char)
+        try:
+            lettre = dico_decode(code, dico)
+            decoded += lettre
+            code = ''
+        except ValueError as e:
+            continue
+    return decoded

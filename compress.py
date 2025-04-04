@@ -5,14 +5,15 @@ huffDico = load_huffman_dico('assets/dico.txt')
 data = read_byte_file('assets/compress.txt')
 
 encoded_data = ""
+print(f"encoding :{data}") 
 
 # Encoder les données en utilisant le dictionnaire Huffman
 for char in data:
+    char = chr(char)  # Convert ASCII code to character
     if char in huffDico:
         encoded_data += huffDico[char]
     else:
         raise ValueError(f"Character '{char}' not found in Huffman dictionary")
-
 
 while len(encoded_data) % 8 != 0:
     encoded_data += '0'
@@ -27,4 +28,4 @@ for i in range(0, len(encoded_data), 8):
 with open('assets/compressed.bin', 'wb') as f:
     f.write(byte_array)
 
-print("Compression terminée et données écrites dans 'assets/compressed.txt'.")
+print("Compression terminée et données écrites dans 'assets/compressed.bin'.")
