@@ -63,22 +63,35 @@ def huffman_render(m,S,P):
         C.append(tree.get_code())
     return C 
 
-def dico_decode(code,dico:dict):
-    keys = [ k for k,v in dico.items() if v == code]
-    if len(keys) > 1:
-        raise ValueError(f"Code '{code}' has multiple factor in the dictionary")
-    return dico.get(keys[0])
+# Fonction de décodage Huffman
+def huffman_decode(encoded: str, dico: dict):
+    # Inverser le dictionnaire pour décodage
+    reverse_dict = {v: k for k, v in dico.items()}
+    
+    decoded = []
+    current_code = ""
+    
+    for bit in encoded:
+        current_code += bit
+        if current_code in reverse_dict:
+            decoded.append(reverse_dict[current_code])
+            current_code = ""
+    
+    if current_code:
+        raise ValueError("Encodage invalide - bits restants non décodés")
+    
+    return ''.join(decoded)
 
-def huffman_decode(encoded:str , dico:dict):
-    decoded = ''
-    # decoded = ''.join( dico_decode(code,dico) for code in encoded )
-    code = ''
-    for char in encoded:
-        code = code.join(char)
-        try:
-            lettre = dico_decode(code, dico)
-            decoded += lettre
-            code = ''
-        except ValueError as e:
-            continue
-    return decoded
+def encode_word(mot, huffman_dict):  
+    # Encodage du mot
+    encoded_data = ''
+    try:
+        encoded_data = ''.join([huffman_dict[chr(char)] for char in mot])
+    except Exception as e:
+        print(e)
+    print(f"Encoded data: {encoded_data}")
+    return encoded_data
+
+
+def huffman_encode(data, huffman_dict , filename):
+    return encode_word(data, huffman_dict)
