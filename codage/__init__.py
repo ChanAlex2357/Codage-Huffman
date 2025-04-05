@@ -95,3 +95,26 @@ def encode_word(mot, huffman_dict):
 
 def huffman_encode(data, huffman_dict , filename):
     return encode_word(data, huffman_dict)
+
+
+from collections import Counter
+import re
+
+def huffman_base(text):
+    # Nettoyage du texte en minuscules et suppression de la ponctuation
+    text = text.lower()
+    text = re.sub(r'[^\w\s]', '', text)
+    
+    # Division en mots
+    mots = text.split()
+    
+    # Calcul du nombre total de mots
+    m = len(mots)
+    
+    # Comptage des occurrences de chaque mot
+    freq = Counter(mots)
+    
+    # Calcul des probabilités
+    p = {mot: count/m for mot, count in freq.items()}
+    
+    return m, sorted(freq.keys()), p
