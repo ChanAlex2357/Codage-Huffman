@@ -1,8 +1,8 @@
-from codage.file import load_huffman_dico, read_byte_file, write_binary_file
+from codage.file import load_huffman_dico, read_data, write_binary_file
 from codage import huffman_encode
 # Récupérer des données : le dictionnaire Huffman et les données à compresser
 huffDico = load_huffman_dico('assets/dico.txt')
-data = read_byte_file('assets/compress.txt')
+data = read_data('assets/compress.txt')
 
 # Compression
 encoded = huffman_encode(data, huffDico, 'assets/compressed.bin')

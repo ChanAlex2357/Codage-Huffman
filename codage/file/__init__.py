@@ -5,6 +5,13 @@ def read_data(filepath,mode='r'):
 
 # Fonction pour lire depuis un fichier binaire
 def read_binary_file(filename: str):
+    '''
+        Lit un fichier binaire et renvoie les donnees sous forme de chaine binaire
+        Params :
+            - filename : le nom du fichier
+        Returns :
+            - binary_str : la chaine binaire
+    '''
     with open(filename, 'rb') as f:
         padding = f.read(1)[0]  # Lire le premier byte (padding)
         byte_data = f.read()
@@ -17,8 +24,18 @@ def read_binary_file(filename: str):
     
     return binary_str
 
-
 def load_huffman_data(filepath):
+    '''
+        Recupere les donnee necessaire (M,S,P) pour etablir l'arbre de huffman
+        M: le nombre de mot
+        S: la liste des mots
+        P: Probabilite de chaque mot
+
+        Params : 
+            - filepath : le chemin vers le fichier contenant les donnees
+        Returns :
+            M , S , P
+    '''
     with open(filepath, 'r') as f:
         lines = f.read().strip().splitlines()
     if len(lines) < 3:
@@ -31,10 +48,27 @@ def load_huffman_data(filepath):
     return m , alphabets, probabilities
 
 def write_huffman_dico(filePath,m,S,C):
+    '''
+        Ecrit le dictionnaire de huffman dans un fichier
+        Params :
+            - filePath : le chemin vers le fichier
+            - m : le nombre de mot
+            - S : la liste des mots
+            - C : la liste des codes de huffman
+
+    '''
     with open(filePath, 'w') as f:
         for i in range(m):
             f.write(f'{S[i]}:{C[i]}\n')
+
 def load_huffman_dico(filePath):
+    '''
+        Charge le dictionnaire de huffman depuis un fichier
+        Params :
+            - filePath : le chemin vers le fichier
+        Returns :
+            - huffDico : le dictionnaire de huffman
+    '''
     huffDico = dict()
     with open(filePath,'r') as f:
         lines = f.read().strip().splitlines()
@@ -46,8 +80,12 @@ def load_huffman_dico(filePath):
 
 # Fonction pour écrire dans un fichier binaire
 def write_binary_file(data: str, filename: str):
-    # Ajouter le padding nécessaire (nombre de bits ajoutés)
-    print(data)
+    '''
+        Ecrit les donnees dans un fichier binaire
+        Params :
+            - data : le mot a ecrire
+            - filename : le nom du fichier
+    '''
     padding = (8 - len(data) % 8) % 8
     padded_data = data + '0' * padding
     

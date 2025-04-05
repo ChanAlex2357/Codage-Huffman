@@ -86,7 +86,7 @@ def encode_word(mot, huffman_dict):
     # Encodage du mot
     encoded_data = ''
     try:
-        encoded_data = ''.join([huffman_dict[chr(char)] for char in mot])
+        encoded_data = ''.join([huffman_dict[(char)] for char in mot])
     except Exception as e:
         print(e)
     print(f"Encoded data: {encoded_data}")
