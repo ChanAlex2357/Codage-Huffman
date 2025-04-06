@@ -82,39 +82,93 @@ def huffman_decode(encoded: str, dico: dict):
     
     return ''.join(decoded)
 
-def encode_word(mot, huffman_dict):  
+def huffman_encode_word(mot, huffman_dict):  
     # Encodage du mot
     encoded_data = ''
     try:
-        encoded_data = ''.join([huffman_dict[(char)] for char in mot])
+        encoded_data = ''.join([huffman_dict[char] for char in mot])
     except Exception as e:
         print(e)
-    print(f"Encoded data: {encoded_data}")
     return encoded_data
 
 
-def huffman_encode(data, huffman_dict , filename):
-    return encode_word(data, huffman_dict)
+def huffman_encode(sentence, huffman_dict):
+    encoded = ''.join([huffman_encode_word(mot,huffman_dict) for mot in sentence])
+    return encoded
 
-
+def huffman_dico(m,s,c):
+    '''
+        Crée un dictionnaire de Huffman à partir des mots et de leurs codes
+        Params :
+            - m : le nombre de mots
+            - s : la liste des mots
+            - c : la liste des codes de Huffman
+        Returns :
+            - dico : le dictionnaire de Huffman
+    '''
+    dico = {}
+    for i in range(m):
+        dico[s[i]] = c[i]
+    return dico
 from collections import Counter
 import re
 
-def huffman_base(text):
-    # Nettoyage du texte en minuscules et suppression de la ponctuation
-    text = text.lower()
-    text = re.sub(r'[^\w\s]', '', text)
+import re
+from collections import Counter
+
+def huffman_base(text, keep_spaces=True):
+
+    if keep_spaces:
+        # # Supprime la ponctuation mais conserve les espaces
+        # text = re.sub(r'[^\w\s]', '', text)
+        # Remplace les espaces multiples par un seul espace
+        text = re.sub(r'\s+', ' ', text).strip()
+    else:
+        # Supprime tout sauf lettres et chiffres (y compris les espaces)
+        text = re.sub(r'[^\w]', '', text)
+
+    # Calcul du nombre total de caractères (y compris espaces si keep_spaces=True)
+    total_caracteres = len(text)
     
-    # Division en mots
-    mots = text.split()
+    if total_caracteres == 0:
+        return 0, [], []
+
+    # Comptage des occurrences de chaque caractère (y compris espace)
+    freq = Counter(text)
+
+    # Caractères triés
+    caracteres_tries = sorted(freq.keys())
+
+    # Probabilités dans le même ordre
+    p = [freq[char] / total_caracteres for char in caracteres_tries]
+
+    m = len(p)  # nombre de caractères différents
+
+    return m, caracteres_tries, p
+
+
+# def huffman_base_words(text):
+#     text = re.sub(r'[^\w\s]', '', text)  # Enlève tout sauf les lettres, chiffres et espaces
     
-    # Calcul du nombre total de mots
-    m = len(mots)
+#     # Séparation des mots
+#     mots = text.split()
     
-    # Comptage des occurrences de chaque mot
-    freq = Counter(mots)
+#     if not mots:
+#         return 0, [], []
     
-    # Calcul des probabilités
-    p = {mot: count/m for mot, count in freq.items()}
+#     # Calcul du nombre total de mots (pas de lettres)
+#     total_mots = len(mots)
     
-    return m, sorted(freq.keys()), p
+#     # Comptage des occurrences de chaque mot
+#     freq = Counter(mots)
+    
+#     # Mots distincts triés
+#     mots_distincts = sorted(freq.keys())
+    
+#     # Probabilités dans le même ordre
+#     probabilites = [freq[word]/total_mots for word in mots_distincts]
+    
+#     # Nombre de mots distincts
+#     m = len(mots_distincts)
+    
+#     return m, mots_distincts, probabilites

@@ -78,24 +78,40 @@ def load_huffman_dico(filePath):
     print(huffDico)
     return huffDico
 
-# Fonction pour écrire dans un fichier binaire
-def write_binary_file(data: str, filename: str):
-    '''
-        Ecrit les donnees dans un fichier binaire
-        Params :
-            - data : le mot a ecrire
-            - filename : le nom du fichier
-    '''
-    padding = (8 - len(data) % 8) % 8
-    padded_data = data + '0' * padding
+def write_compressed_binary(encoded_data: str, filename: str):
+    """
+    Écrit les données binaires compressées (sans header) dans un fichier.
     
-    # Convertir en bytes
+    Args:
+        encoded_data (str): Données encodées en binaire (suite de '0' et '1')
+        filename (str): Nom du fichier de sortie (.bin)
+    """
+    # Ajout du padding et conversion en bytes
+    padding = (8 - len(encoded_data) % 8) % 8
+    padded_data = encoded_data + '0' * padding
+    
+    # Conversion en bytes
     byte_array = bytearray()
     for i in range(0, len(padded_data), 8):
         byte = padded_data[i:i+8]
         byte_array.append(int(byte, 2))
     
-    # Écrire dans le fichier (le premier byte contient le nombre de bits de padding)
+    # Écriture dans le fichier (1er byte = padding)
     with open(filename, 'wb') as f:
-        f.write(bytearray([padding]))  # Écrire le padding en premier
-        f.write(byte_array)
+        f.write(padding.to_bytes(1, 'big'))  # Stocke le padding (1 byte)
+        f.write(byte_array)  # Stocke les données
+
+
+def write_huffman_data(filepath, M, S, P):
+    '''
+        Écrit les données dans un fichier
+        Params :
+            - filepath : le chemin vers le fichier
+            - M : un entier ou string
+            - S : liste de chaînes (symboles)
+            - P : liste de floats (probabilités ou fréquences)
+    '''
+    with open(filepath, 'w') as f:
+        f.write(f"{M}\n")
+        f.write(" ".join(S) + "\n")
+        f.write(" ".join(map(str, P)) + "\n")

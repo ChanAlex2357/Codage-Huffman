@@ -5,6 +5,9 @@ huffDico = load_huffman_dico('assets/dico.txt')
 data = read_data('assets/compress.txt')
 
 # Compression
-encoded = huffman_encode(data, huffDico, 'assets/compressed.bin')
+encoded = huffman_encode(data, huffDico)
 write_binary_file(encoded, 'assets/compressed.bin')
 print("Compression terminée et données écrites dans 'assets/compressed.bin'.")
+
+
+# -------- TEST TExt
