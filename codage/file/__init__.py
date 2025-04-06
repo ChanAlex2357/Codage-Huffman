@@ -5,6 +5,13 @@ def read_data(filepath,mode='r'):
 
 # Fonction pour lire depuis un fichier binaire
 def read_binary_file(filename: str):
+    '''
+        Lit un fichier binaire et renvoie les donnees sous forme de chaine binaire
+        Params :
+            - filename : le nom du fichier
+        Returns :
+            - binary_str : la chaine binaire
+    '''
     with open(filename, 'rb') as f:
         padding = f.read(1)[0]  # Lire le premier byte (padding)
         byte_data = f.read()
@@ -17,8 +24,18 @@ def read_binary_file(filename: str):
     
     return binary_str
 
-
 def load_huffman_data(filepath):
+    '''
+        Recupere les donnee necessaire (M,S,P) pour etablir l'arbre de huffman
+        M: le nombre de mot
+        S: la liste des mots
+        P: Probabilite de chaque mot
+
+        Params : 
+            - filepath : le chemin vers le fichier contenant les donnees
+        Returns :
+            M , S , P
+    '''
     with open(filepath, 'r') as f:
         lines = f.read().strip().splitlines()
     if len(lines) < 3:
@@ -31,10 +48,27 @@ def load_huffman_data(filepath):
     return m , alphabets, probabilities
 
 def write_huffman_dico(filePath,m,S,C):
+    '''
+        Ecrit le dictionnaire de huffman dans un fichier
+        Params :
+            - filePath : le chemin vers le fichier
+            - m : le nombre de mot
+            - S : la liste des mots
+            - C : la liste des codes de huffman
+
+    '''
     with open(filePath, 'w') as f:
         for i in range(m):
             f.write(f'{S[i]}:{C[i]}\n')
+
 def load_huffman_dico(filePath):
+    '''
+        Charge le dictionnaire de huffman depuis un fichier
+        Params :
+            - filePath : le chemin vers le fichier
+        Returns :
+            - huffDico : le dictionnaire de huffman
+    '''
     huffDico = dict()
     with open(filePath,'r') as f:
         lines = f.read().strip().splitlines()
@@ -44,20 +78,40 @@ def load_huffman_dico(filePath):
     print(huffDico)
     return huffDico
 
-# Fonction pour écrire dans un fichier binaire
-def write_binary_file(data: str, filename: str):
-    # Ajouter le padding nécessaire (nombre de bits ajoutés)
-    print(data)
-    padding = (8 - len(data) % 8) % 8
-    padded_data = data + '0' * padding
+def write_compressed_binary(encoded_data: str, filename: str):
+    """
+    Écrit les données binaires compressées (sans header) dans un fichier.
     
-    # Convertir en bytes
+    Args:
+        encoded_data (str): Données encodées en binaire (suite de '0' et '1')
+        filename (str): Nom du fichier de sortie (.bin)
+    """
+    # Ajout du padding et conversion en bytes
+    padding = (8 - len(encoded_data) % 8) % 8
+    padded_data = encoded_data + '0' * padding
+    
+    # Conversion en bytes
     byte_array = bytearray()
     for i in range(0, len(padded_data), 8):
         byte = padded_data[i:i+8]
         byte_array.append(int(byte, 2))
     
-    # Écrire dans le fichier (le premier byte contient le nombre de bits de padding)
+    # Écriture dans le fichier (1er byte = padding)
     with open(filename, 'wb') as f:
-        f.write(bytearray([padding]))  # Écrire le padding en premier
-        f.write(byte_array)
+        f.write(padding.to_bytes(1, 'big'))  # Stocke le padding (1 byte)
+        f.write(byte_array)  # Stocke les données
+
+
+def write_huffman_data(filepath, M, S, P):
+    '''
+        Écrit les données dans un fichier
+        Params :
+            - filepath : le chemin vers le fichier
+            - M : un entier ou string
+            - S : liste de chaînes (symboles)
+            - P : liste de floats (probabilités ou fréquences)
+    '''
+    with open(filepath, 'w') as f:
+        f.write(f"{M}\n")
+        f.write(" ".join(S) + "\n")
+        f.write(" ".join(map(str, P)) + "\n")

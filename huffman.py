@@ -1,5 +1,4 @@
-import numpy as np
-import pandas as pd
+
 from codage.file import load_huffman_data , write_huffman_dico
 from codage import huffman_render
 
