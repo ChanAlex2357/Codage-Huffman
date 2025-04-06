@@ -1,88 +1,93 @@
-from typing import Tuple, Union
+from typing import List, Tuple
 import numpy as np
 import cv2
 
-def read_image_file(filepath: str):
-    """
-    Read an image file using OpenCV
-    
-    Args:
-        filepath: Path to the image file (supports BMP, JPG, PNG, etc.)
-    
-    Returns:
-        Tuple of (image_data, metadata) or None if reading fails
-        - image_data: numpy array of pixel data (height × width × channels)
-        - metadata: dictionary with basic image info
-    """
-    try:
-        # Read image (IMREAD_UNCHANGED preserves original color depth/channels)
-        img = cv2.imread(filepath, cv2.IMREAD_UNCHANGED)
-        
-        if img is None:
-            raise ValueError("OpenCV failed to read the image")
-        
-        # Convert BGR to RGB for color images
-        if len(img.shape) == 3 and img.shape[2] == 3:
-            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        
-        # Prepare metadata
-        metadata = {
-            'width': img.shape[1],
-            'height': img.shape[0],
-            'channels': 1 if len(img.shape) == 2 else img.shape[2],
-            'dtype': str(img.dtype)
-        }
-        
-        return img, metadata
-        
-    except Exception as e:
-        print(f"Error reading image: {str(e)}")
-        return None
-
-import numpy as np
-
-def convert_to_grayscale(image_path: str, method: str = 'weighted', output_path: str = None):
-    """
-    Convertit une image en nuances de gris avec différentes méthodes
-    
-    Args:
-        image_path: Chemin vers l'image
-        method: Méthode de conversion ('average', 'weighted', 'luminosity', 'desaturation')
-        output_path: Si spécifié, sauvegarde l'image résultante
-    
-    Returns:
-        Image en nuances de gris (numpy array)
-    """
-    # Charger l'image (conserve les canaux alpha si présents)
-    img = cv2.imread(image_path, cv2.IMREAD_UNCHANGED)
-    
+def read_image_file(filepath: str) -> Tuple[np.ndarray, dict]:
+    """Lit une image avec OpenCV et retourne les données et métadonnées"""
+    img = cv2.imread(filepath, cv2.IMREAD_GRAYSCALE)
     if img is None:
-        raise ValueError("Impossible de charger l'image")
+        raise ValueError(f"Impossible de charger l'image: {filepath}")
     
-    # Conversion selon la méthode choisie
-    if len(img.shape) == 2:  # Déjà en niveaux de gris
-        gray = img
-    else:
-        if method == 'average':
-            # Moyenne simple (R+G+B)/3
-            gray = np.mean(img[..., :3], axis=2).astype(np.uint8)
-        elif method == 'weighted':
-            # Pondération OpenCV (BGR)
-            gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        elif method == 'luminosity':
-            # Pondération perceptuelle (REC 601)
-            weights = np.array([0.299, 0.587, 0.114])
-            gray = np.dot(img[..., :3], weights).astype(np.uint8)
-        elif method == 'desaturation':
-            # Désaturation (max + min)/2
-            max_val = np.max(img[..., :3], axis=2)
-            min_val = np.min(img[..., :3], axis=2)
-            gray = ((max_val + min_val) / 2).astype(np.uint8)
-        else:
-            raise ValueError("Méthode non reconnue")
+    metadata = {
+        'width': img.shape[1],
+        'height': img.shape[0],
+        'channels': 1,
+        'dtype': str(img.dtype)
+    }
+    return img, metadata
+
+def get_lsb_bits_from_positions(img_array: np.ndarray, positions: List[Tuple[int, int]]) -> List[int]:
+    """
+    Extrait les bits LSB aux positions spécifiées dans une image en niveaux de gris
+    et affiche la représentation binaire complète des pixels
     
-    # Sauvegarde si demandé
-    if output_path:
-        cv2.imwrite(output_path, gray)
+    Args:
+        img_array: Tableau numpy 2D de l'image (hauteur × largeur)
+        positions: Liste de tuples (row, col) spécifiant les positions des pixels
     
-    return gray
+    Returns:
+        Liste des bits LSB (0 ou 1) dans l'ordre spécifié
+    """
+    bits = []
+    height, width = img_array.shape
+    
+    for row, col in positions:
+        if row >= height or col >= width:
+            raise ValueError(f"Position invalide: ({row}, {col}) - Image size: {height}x{width}")
+        
+        pixel_value = img_array[row, col]
+        # Conversion en binaire sur 8 bits (avec padding)
+        binary_str = format(pixel_value, '08b')
+        lsb = pixel_value & 1  # Extraire le bit le moins significatif
+        bits.append(lsb)
+        
+        # Debug print avec représentation binaire
+        print(f"Position ({row}, {col})")
+        print(f"Valeur décimale: {pixel_value}")
+        print(f"Valeur binaire: {binary_str} (LSB: {binary_str[7]})")
+        print("-" * 30)
+    
+    return bits
+
+def bits_to_bytes_str(bits: List[int]) -> bytes:\
+    return ''.join([f'{i}' for i in bits])
+
+def bits_to_bytes(bits: List[int]) -> bytes:
+    """
+    Convertit une liste de bits en bytes
+    Args:
+        bits: Liste de bits (0 ou 1)
+    Returns:
+        Bytes reconstitués
+    """
+    byte_array = bytearray()
+    for i in range(0, len(bits), 8):
+        byte_bits = bits[i:i+8]
+        if len(byte_bits) < 8:
+            # Compléter avec des 0 si nécessaire
+            byte_bits += [0] * (8 - len(byte_bits))
+        byte = sum(bit << pos for pos, bit in enumerate(byte_bits))
+        byte_array.append(byte)
+    return bytes(byte_array)
+
+def steg_decode_gray_image_file(filepath: str, positions: List[Tuple[int, int]]) -> bytes:
+    """
+    Décode un message caché dans une image en niveaux de gris
+    
+    Args:
+        filepath: Chemin vers l'image
+        positions: Liste de tuples (row, col) spécifiant où les bits sont cachés
+    
+    Returns:
+        Données extraites sous forme de bytes
+    """
+    # 1. Charger l'image
+    img_array, _ = read_image_file(filepath)
+    
+    # 2. Extraire les bits LSB
+    bits = get_lsb_bits_from_positions(img_array, positions)
+
+    # 3. Convertir en bytes
+    decoded_data = bits_to_bytes_str(bits)
+
+    return decoded_data

@@ -41,18 +41,18 @@ Codage d'information en utilisant le codage de Huffman
 
 ## Stegannographie
 
-- [ ] Lecture d'une image en nuance de gris sans utiliser de librairie
+- [x] Lecture d'une image avec opencv
 <!-- - [ ] Lecture d'une image rgb sans utiliser de librairie -->
-- [ ] Decoder une image en nuance de gris (N&B)
-  - [ ]  fonction steg_gray_image_bytes( bitarray[] , bitPostitions[])
-  - [ ] recuperer les bits sur les positions doneees
-  - [ ] fonction steg_decode_gray_image(bitarray[],bitposittions[])
-    - [ ] bytes[] = steg_gray_image_bytes
-    - [ ] code = ''
-    - [ ] pour chache byte in bytes recuperer le dernier bit => code.join.each bit
-  - [ ] fonction steg_decode_gray_image_file(filepath,bitPositions)
-    - [ ] bytesarray =  Lecture du fichier
-    - [ ] steg_decode_gray_image
+- [x] Decoder une image en nuance de gris (N&B)
+  - [x]  fonction steg_gray_image_bytes( bitarray[] , bitPostitions[])
+  - [x] recuperer les bits sur les positions doneees
+  - [x] fonction steg_decode_gray_image(bitarray[],bitposittions[])
+    - [x] bytes[] = steg_gray_image_bytes
+    - [x] code = ''
+    - [x] pour chache byte in bytes recuperer le dernier bit => code.join.each bit
+  - [x] fonction steg_decode_gray_image_file(filepath,bitPositions)
+    - [x] bytesarray =  Lecture du fichier
+    - [x] steg_decode_gray_image
 - [ ] Lecture de fichier wave sans librairie
 - [ ] Decoder un son wave
   - [ ] steg_decode_wav()
