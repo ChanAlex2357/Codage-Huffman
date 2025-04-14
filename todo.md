@@ -53,6 +53,8 @@ Codage d'information en utilisant le codage de Huffman
   - [x] fonction steg_decode_gray_image_file(filepath,bitPositions)
     - [x] bytesarray =  Lecture du fichier
     - [x] steg_decode_gray_image
-- [ ] Lecture de fichier wave sans librairie
-- [ ] Decoder un son wave
-  - [ ] steg_decode_wav()
+- [x] Lecture de fichier wave sans librairie
+- [x] Decoder un son wave
+  - [x] steg_decode_wav()
+  - [x] recuperer les lsb
+  - [x] decoder le code
