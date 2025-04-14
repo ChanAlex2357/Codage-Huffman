@@ -117,7 +117,6 @@ def huffman_base(text: str, keep_spaces: bool = True) -> Tuple[int, List[str], L
     
     freq = Counter(text)
     chars = sorted(freq.keys())
-    total = len(text)
-    probs = [freq[char]/total for char in chars]
+    probs = [freq[char] for char in chars]
     
     return len(chars), chars, probs

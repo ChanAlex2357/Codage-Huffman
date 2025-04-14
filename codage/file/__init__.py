@@ -101,7 +101,6 @@ def write_compressed_binary(encoded_data: str, filename: str):
         f.write(padding.to_bytes(1, 'big'))  # Stocke le padding (1 byte)
         f.write(byte_array)  # Stocke les données
 
-
 def write_huffman_data(filepath, M, S, P):
     '''
         Écrit les données dans un fichier
