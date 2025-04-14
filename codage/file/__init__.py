@@ -75,7 +75,6 @@ def load_huffman_dico(filePath):
     for line in lines:
         [k,v] = line.strip().split(':')
         huffDico.__setitem__(k,v)
-    print(huffDico)
     return huffDico
 
 def write_compressed_binary(encoded_data: str, filename: str):

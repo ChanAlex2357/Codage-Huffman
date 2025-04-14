@@ -31,3 +31,11 @@ print(img_code)
 dico = load_huffman_dico("assets/dico.txt")
 decode = huffman_decode(img_code,dico)
 print(f"{decode}")
+
+
+gray_img = convert_rgb_to_grayscale("assets/img/baobab.jpg","assets/img/gray.jpg")
+img_code = steg_decode_gray_image_file("assets/img/baobab-2.jpg",positions)
+print(img_code)
+
+decode = huffman_decode(img_code,dico)
+print(f"{decode}")

@@ -40,9 +40,9 @@ def read_wav_header(file_path):
         return header_info
 
 
-def read_image_file(filepath: str) -> Tuple[np.ndarray, dict]:
+def read_gray_image_file(filepath: str) -> Tuple[np.ndarray, dict]:
     """
-    Lit une image en niveaux de gris et retourne l'image sous forme de matrice ainsi que ses métadonnées.
+        Lit une image en niveaux de gris et retourne l'image sous forme de matrice ainsi que ses métadonnées.
     """
     img = cv2.imread(filepath, cv2.IMREAD_GRAYSCALE)
     if img is None:
@@ -56,6 +56,37 @@ def read_image_file(filepath: str) -> Tuple[np.ndarray, dict]:
         'dtype': str(img.dtype)
     }
     return img, metadata
+
+def convert_rgb_to_grayscale(image_path: str, output_path: str = None) -> np.ndarray:
+    """
+    Convertit une image RGB en niveaux de gris (noir et blanc).
+    
+    Args:
+        image_path (str): Chemin vers l'image RGB à convertir.
+        output_path (str, optional): Chemin pour sauvegarder l'image convertie. 
+                                     Si None, l'image ne sera pas sauvegardée.
+    
+    Returns:
+        np.ndarray: Image convertie en niveaux de gris.
+    """
+    # Charger l'image
+    image = cv2.imread(image_path)
+    
+    if image is None:
+        raise ValueError(f"Impossible de charger l'image: {image_path}")
+    
+    # Vérifie si l'image est déjà en niveaux de gris
+    if len(image.shape) == 2 or image.shape[2] == 1:
+        gray_image = image  # Déjà en niveaux de gris
+    else:
+        # Conversion en niveaux de gris
+        gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    
+    # Sauvegarde facultative
+    if output_path:
+        cv2.imwrite(output_path, gray_image)
+    
+    return gray_image
 
 
 def get_lsb_bits_from_positions(img_array: np.ndarray, positions: List[Tuple[int, int]]) -> List[int]:
@@ -82,11 +113,11 @@ def get_lsb_bits_from_positions(img_array: np.ndarray, positions: List[Tuple[int
         lsb = pixel_value & 1  # Extraction du LSB
         bits.append(lsb)
 
-        # Affichage de debug
-        print(f"Position ({row}, {col})")
-        print(f"Valeur décimale: {pixel_value}")
-        print(f"Valeur binaire: {binary_str} (LSB: {binary_str[7]})")
-        print("-" * 30)
+        # # Affichage de debug
+        # print(f"Position ({row}, {col})")
+        # print(f"Valeur décimale: {pixel_value}")
+        # print(f"Valeur binaire: {binary_str} (LSB: {binary_str[7]})")
+        # print("-" * 30)
 
     return bits
 
@@ -129,7 +160,7 @@ def steg_decode_gray_image_file(filepath: str, positions: List[Tuple[int, int]])
     Returns:
         Message décodé sous forme de bytes (sous forme de chaîne binaire).
     """
-    img_array, _ = read_image_file(filepath)
+    img_array, _ = read_gray_image_file(filepath)
     bits = get_lsb_bits_from_positions(img_array, positions)
     decoded_data = bits_to_bytes_str(bits)
     return decoded_data
