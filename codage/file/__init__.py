@@ -75,7 +75,6 @@ def load_huffman_dico(filePath):
     for line in lines:
         [k,v] = line.strip().split(':')
         huffDico.__setitem__(k,v)
-    print(huffDico)
     return huffDico
 
 def write_compressed_binary(encoded_data: str, filename: str):
@@ -100,7 +99,6 @@ def write_compressed_binary(encoded_data: str, filename: str):
     with open(filename, 'wb') as f:
         f.write(padding.to_bytes(1, 'big'))  # Stocke le padding (1 byte)
         f.write(byte_array)  # Stocke les données
-
 
 def write_huffman_data(filepath, M, S, P):
     '''
