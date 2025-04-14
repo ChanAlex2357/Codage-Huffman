@@ -3,7 +3,7 @@ from codage import *
 
 # --- HUFFMAN DATA ----
 data = read_data("assets/test/text.txt")
-M,S,P = huffman_base(data,False)
+M,S,P = huffman_base(data)
 write_huffman_data('assets/test/data.txt',M,S,P)
 
 # ---- HUFFMAN DICO ----
